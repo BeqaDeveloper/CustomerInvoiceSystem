@@ -3,7 +3,6 @@ using InvoiceSystem.Application.ViewModels;
 using InvoiceSystem.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
-using InvoiceSystem.Infrastructure.Context;
 
 namespace InvoiceSystem.Api.Controllers;
 
@@ -12,10 +11,12 @@ namespace InvoiceSystem.Api.Controllers;
 [Produces(MediaTypeNames.Application.Json)]
 public class InvoiceController : Controller
 {
+    private readonly ILogger _logger;
     private readonly IInvoiceService _invoiceService;
 
-    public InvoiceController(IInvoiceService invoiceService)
+    public InvoiceController(ILogger logger, IInvoiceService invoiceService)
     {
+        _logger = logger;
         _invoiceService = invoiceService;
     }
 

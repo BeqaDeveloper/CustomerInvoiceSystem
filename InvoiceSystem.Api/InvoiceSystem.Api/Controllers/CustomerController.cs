@@ -11,9 +11,11 @@ namespace InvoiceSystem.Api.Controllers;
 public class CustomerController : Controller
 {
     private readonly ICustomerService _customerService;
+    private readonly ILogger _logger;
 
-    public CustomerController(ICustomerService customerService)
+    public CustomerController(ILogger logger, ICustomerService customerService)
     {
+        _logger = logger;
         _customerService = customerService;
     }
 

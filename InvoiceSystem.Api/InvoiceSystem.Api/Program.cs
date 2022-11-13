@@ -9,7 +9,15 @@ using System.Text.Json;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("Default");
 
-builder.Logging.AddConsole();
+#region Configure Logging
+
+builder.Host.ConfigureLogging(logging =>
+{
+    logging.ClearProviders();
+    logging.AddConsole();
+});
+
+#endregion
 
 #region Add services to the container.
 
