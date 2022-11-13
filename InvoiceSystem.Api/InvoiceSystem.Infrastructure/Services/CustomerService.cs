@@ -28,11 +28,18 @@ public class CustomerService : BaseService, ICustomerService
     /// <returns>Customers.</returns>
     public async Task<List<CustomerViewModel>> GetCustomersAsync(int pageNumber, int pageSize)
     {
-        var data = await _context.Customers.OrderBy(x => x.Id)
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize).ToListAsync();
+        try
+        {
+            var data = await _context.Customers.OrderBy(x => x.Id)
+        .Skip((pageNumber - 1) * pageSize)
+        .Take(pageSize).ToListAsync();
 
-        var result = _mapper.Map<List<CustomerViewModel>>(data);
-        return result;
+            var result = _mapper.Map<List<CustomerViewModel>>(data);
+            return result;
+        }
+        catch (Exception)
+        {
+            return null!;
+        }
     }
 }

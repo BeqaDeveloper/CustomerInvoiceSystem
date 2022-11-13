@@ -26,7 +26,6 @@ public class InvoiceController : Controller
     public async Task<JsonResult> GetInvoices([FromQuery] Pagination page)
     {
         var result = await _invoiceService.GetInvoicesAsync(page.PageNumber, page.PageSize);
-        
         return Json(result);
     }
 

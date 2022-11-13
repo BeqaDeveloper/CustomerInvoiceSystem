@@ -4,6 +4,7 @@ using InvoiceSystem.Domain.Models;
 using InvoiceSystem.Infrastructure.Context;
 using InvoiceSystem.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace InvoiceSystem.Infrastructure.Services;
 
@@ -14,9 +15,11 @@ public class InvoiceService : BaseService, IInvoiceService
 {
     private readonly IMapper _mapper;
     private readonly InvoiceSystemDbContext _context;
+    private readonly ILogger _logger;
 
-    public InvoiceService(InvoiceSystemDbContext context, IMapper mapper) : base(context)
+    public InvoiceService(ILogger logger, InvoiceSystemDbContext context, IMapper mapper) : base(context)
     {
+        _logger=logger;
         _mapper = mapper;
         _context = context;
     }
@@ -29,12 +32,19 @@ public class InvoiceService : BaseService, IInvoiceService
     /// <returns>Invoices.</returns>
     public async Task<List<InvoiceViewModel>> GetInvoicesAsync(int pageNumber, int pageSize)
     {
-        var data = await _context.Invoices.OrderBy(x => x.Id)
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize).ToListAsync();
+        try
+        {
+            var data = await _context.Invoices.OrderBy(x => x.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize).ToListAsync();
 
-        var result = _mapper.Map<List<Invoice>, List<InvoiceViewModel>>(data);
-        return result;
+            var result = _mapper.Map<List<Invoice>, List<InvoiceViewModel>>(data);
+            return result;
+        }
+        catch (Exception)
+        {
+            return null!;
+        }
     }
 
     /// <summary>
@@ -44,11 +54,18 @@ public class InvoiceService : BaseService, IInvoiceService
     /// <returns></returns>
     public async Task<int> CreateInvoiceAsync(InvoiceViewModel model)
     {
-        var invoice = _mapper.Map<Invoice>(model);
-        _context.Invoices.Add(invoice);
-        await _context.SaveChangesAsync();
+        try
+        {
+            var invoice = _mapper.Map<Invoice>(model);
+            _context.Invoices.Add(invoice);
+            await _context.SaveChangesAsync();
 
-        return invoice.Id;
+            return invoice.Id;
+        }
+        catch (Exception)
+        {
+            return 0;
+        }
     }
 
     /// <summary>
@@ -58,17 +75,24 @@ public class InvoiceService : BaseService, IInvoiceService
     /// <returns></returns>
     public async Task UpdateInvoiceAsync(InvoiceViewModel model)
     {
-        var invoice = await _context.Invoices.FindAsync(model.Id);
-        if (invoice != null)
+        try
         {
-            invoice.Amount = model.Amount;
-            invoice.Currency = model.Currency;
-            invoice.Status = model.Status;
-            invoice.Description = model.Description;
-            invoice.DurationDate = model.DurationDate;
-        }
+            var invoice = await _context.Invoices.FindAsync(model.Id);
+            if (invoice != null)
+            {
+                invoice.Amount = model.Amount;
+                invoice.Currency = model.Currency;
+                invoice.Status = model.Status;
+                invoice.Description = model.Description;
+                invoice.DurationDate = model.DurationDate;
+            }
 
-        await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception exception)
+        {
+            throw new Exception(exception.StackTrace);
+        }
     }
 
     /// <summary>
