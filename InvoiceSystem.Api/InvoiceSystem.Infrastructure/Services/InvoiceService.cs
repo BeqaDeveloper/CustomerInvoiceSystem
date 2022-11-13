@@ -99,7 +99,7 @@ public class InvoiceService : BaseService, IInvoiceService
     /// <returns></returns>
     public async Task DeleteInvoiceAsync(int id)
     {
-        var invoice = await _context.Invoices.FindAsync(id);
+        await _context.Invoices.FindAsync(id);
         await _context.SaveChangesAsync();
     }
 }
