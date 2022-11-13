@@ -15,11 +15,9 @@ public class InvoiceService : BaseService, IInvoiceService
 {
     private readonly IMapper _mapper;
     private readonly InvoiceSystemDbContext _context;
-    private readonly ILogger _logger;
 
-    public InvoiceService(ILogger logger, InvoiceSystemDbContext context, IMapper mapper) : base(context)
+    public InvoiceService(InvoiceSystemDbContext context, IMapper mapper) : base(context)
     {
-        _logger=logger;
         _mapper = mapper;
         _context = context;
     }
