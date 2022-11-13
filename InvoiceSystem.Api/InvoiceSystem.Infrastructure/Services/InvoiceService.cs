@@ -4,7 +4,6 @@ using InvoiceSystem.Domain.Models;
 using InvoiceSystem.Infrastructure.Context;
 using InvoiceSystem.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace InvoiceSystem.Infrastructure.Services;
 
